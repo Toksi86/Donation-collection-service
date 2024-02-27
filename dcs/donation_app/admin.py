@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Payment, Collect
+from .models import Payment, Collect, Reason
 
 
 @admin.register(Collect)
@@ -13,3 +13,8 @@ class CollectAdmin(admin.ModelAdmin):
 class PaymentAdmin(admin.ModelAdmin):
     list_display = ('user', 'title', 'amount', 'collect')
     exclude = ('timestamp', 'contributors_count')
+
+
+@admin.register(Reason)
+class ReasonAdmin(admin.ModelAdmin):
+    pass
