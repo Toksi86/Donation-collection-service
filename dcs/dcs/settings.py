@@ -90,3 +90,13 @@ STATIC_URL = 'static/'
 
 # Default primary key field type
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+CACHE = {
+    'default': {
+        'BACKEND': 'django_redis.cache.RedisCache',
+        'LOCATION': 'redis://default@localhost:6379/1',
+    }
+}
+
+REDIS_HOST = 'localhost'
+REDIS_PORT = 6379
