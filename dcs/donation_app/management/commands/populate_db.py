@@ -13,33 +13,29 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         self.stdout.write('Запущена программа наполнения базы данных...')
 
-        for _ in range(10):
-            User.objects.create_user(
-                username=fake.user_name(),
-                email=fake.email(),
-                password=fake.password()
-            )
+        users = [User(
+            username=fake.user_name(),
+            email=fake.email(),
+            password=fake.password()
+        ) for _ in range(10)]
+        User.objects.bulk_create(users)
 
-        for _ in range(10):
-            Reason.objects.create(title=fake.sentence())
+        reasons = [Reason(title=fake.sentence()) for _ in range(10)]
+        Reason.objects.bulk_create(reasons)
 
-        for _ in range(100):
-            Collect.objects.create(
-                author=User.objects.order_by('?').first(),
-                title=fake.sentence(),
-                reason=Reason.objects.order_by('?').first(),
-                description=fake.text(),
-                planned_amount=fake.pydecimal(left_digits=2, right_digits=2, positive=True),
-                end_date=fake.date_between(start_date='today', end_date='+1y')
-            )
+        collects = [Collect(
+            author=User.objects.order_by('?').first(),
+            title=fake.sentence(),
+            reason=Reason.objects.order_by('?').first(),
+            description=fake.text(),
+            planned_amount=fake.pydecimal(left_digits=2, right_digits=2, positive=True),
+            end_date=fake.date_between(start_date='today', end_date='+1y')
+        ) for _ in range(100)]
+        Collect.objects.bulk_create(collects)
 
-        for _ in range(1000):
-            Payment.objects.create(
-                user=User.objects.order_by('?').first(),
-                title=fake.sentence(),
-                description=fake.text(),
-                amount=fake.pydecimal(left_digits=2, right_digits=2, positive=True),
-                collect=Collect.objects.order_by('?').first()
-            )
+        payments = [Payment(user=User.objects.order_by('?').first(), title=fake.sentence(), description=fake.text(),
+                            amount=fake.pydecimal(left_digits=2, right_digits=2, positive=True),
+                            collect=Collect.objects.order_by('?').first()) for _ in range(1000)]
+        Payment.objects.bulk_create(payments)
 
         self.stdout.write(self.style.SUCCESS('База данных наполнена моковыми данными.'))

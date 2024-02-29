@@ -4,9 +4,9 @@ from rest_framework.routers import DefaultRouter
 from .views import PaymentViewSet, CollectViewSet, ReasonViewSet
 
 router = DefaultRouter()
-router.register(r'payments', PaymentViewSet)
-router.register(r'collects', CollectViewSet)
-router.register(r'reasons', ReasonViewSet)
+router.register('payments', PaymentViewSet)
+router.register('collects', CollectViewSet)
+router.register('reasons', ReasonViewSet)
 
 urlpatterns = [
     path('', include(router.urls)),
