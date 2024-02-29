@@ -24,9 +24,6 @@ class Collect(models.Model):
     reason = models.ForeignKey(Reason, on_delete=models.CASCADE, null=False, blank=False, related_name='collects')
     description = models.TextField(blank=False, null=False)
     planned_amount = models.DecimalField(max_digits=18, decimal_places=2, blank=True, null=True)
-    # TODO: сделать Collected_amount и contributors_count можно сделать расчётными значениями, чтобы не хранить в базе
-    # collected_amount = models.DecimalField(max_digits=18, decimal_places=2, default=0.0)
-    # contributors_count = models.IntegerField(default=0)
     cover_image = models.ImageField(upload_to='collect_covers/', blank=True, null=True)
     end_date = models.DateTimeField(blank=True, null=True)
 
