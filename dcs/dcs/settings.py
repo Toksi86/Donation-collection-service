@@ -1,12 +1,15 @@
+import os
 from pathlib import Path
+
+from dotenv import load_dotenv
+
+load_dotenv()
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-$bnr6fopp5lwwirbi29f(fbv1ku1&h=*iiyla5btzd#e0%2l__'
+SECRET_KEY = os.getenv('SECRET_KEY')
 
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.getenv('DEBUG')
 
 ALLOWED_HOSTS = []
 
@@ -17,6 +20,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'debug_toolbar',
     'donation_app.apps.DonationAppConfig',
 
     'drf_yasg',
@@ -31,6 +35,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
 ]
 
 ROOT_URLCONF = 'dcs.urls'
@@ -79,8 +84,8 @@ AUTH_PASSWORD_VALIDATORS = [
 
 # Internationalization
 
-LANGUAGE_CODE = 'en-us'
-TIME_ZONE = 'UTC'
+LANGUAGE_CODE = 'ru'
+TIME_ZONE = 'Europe/Moscow'
 
 USE_I18N = True
 USE_TZ = True
@@ -100,3 +105,7 @@ CACHE = {
 
 REDIS_HOST = 'localhost'
 REDIS_PORT = 6379
+
+INTERNAL_IPS = [
+    '127.0.0.1',
+]
