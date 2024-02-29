@@ -8,3 +8,8 @@ services:
       - .:/usr/src/app
     ports:
       - "8000:8000"
+
+  redis:
+    image: "redis:latest"
+    ports:
+      - "6379:6379"
