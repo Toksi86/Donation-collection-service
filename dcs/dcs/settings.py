@@ -20,11 +20,13 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'debug_toolbar',
+
     'donation_app.apps.DonationAppConfig',
 
+    'debug_toolbar',
     'drf_yasg',
     'rest_framework',
+    'rest_framework.authtoken',
 ]
 
 MIDDLEWARE = [
@@ -109,3 +111,24 @@ REDIS_PORT = 6379
 INTERNAL_IPS = [
     '127.0.0.1',
 ]
+
+REST_FRAMEWORK = {
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.AllowAny',
+    ],
+
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.TokenAuthentication',
+    ]
+}
+if DEBUG:
+    EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
+    EMAIL_FILE_PATH = os.path.join(BASE_DIR, 'sent_emails')
+
+# Настройки индивидуального SMTP сервера
+# os.getenv('EMAIL_BACKEND')
+# os.getenv('EMAIL_HOST')
+# os.getenv('EMAIL_PORT')
+# os.getenv('EMAIL_USE_TLS')
+# os.getenv('EMAIL_HOST_USER')
+# os.getenv('EMAIL_HOST_PASSWORD')
