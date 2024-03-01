@@ -81,8 +81,6 @@ class CollectViewSet(CacheMixin, viewsets.ModelViewSet):
 
     @action(detail=True, methods=['get'])
     def payments_by_collect(self, request, pk=None):
-        """Показывает все платежи одного конкретного сбора"""
-
         if pk is None:
             return Response({"error": "collect_id is required."}, status=status.HTTP_400_BAD_REQUEST)
         payments = Payment.objects.filter(collect_id=pk)
