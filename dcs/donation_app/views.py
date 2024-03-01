@@ -10,6 +10,7 @@ from .models import Payment, Collect, Reason
 from .permissions import IsAuthenticatedOrReadOnly
 from .serializers import PaymentSerializer, ReasonSerializer, CollectSerializer, \
     UserSerializer, LoginSerializer
+from .tasks import send_confirmation_email_task
 
 
 class CacheMixin:
@@ -40,18 +41,18 @@ class PaymentViewSet(CacheMixin, viewsets.ModelViewSet):
         response = super().create(request, *args, **kwargs)
         if response.status_code == 201:
             cache.delete(self.cache_key)
-            self.send_confirmation_email(request)
+            send_confirmation_email_task.delay(request.user.email)
         return response
 
-    @staticmethod
-    def send_confirmation_email(request):
-        email = EmailMessage(
-            'Успешное пожертвование',
-            f'Вы успешно создали пожертвование.',
-            'dcs@example.com',
-            [request.user.email],
-        )
-        email.send()
+    # @staticmethod
+    # def send_confirmation_email(request):
+    #    email = EmailMessage(
+    #        'Успешное пожертвование',
+    #        f'Вы успешно создали пожертвование.',
+    #        'dcs@example.com',
+    #        [request.user.email],
+    #    )
+    #    email.send()
 
 
 class CollectViewSet(CacheMixin, viewsets.ModelViewSet):
