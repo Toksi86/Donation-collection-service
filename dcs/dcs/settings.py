@@ -126,3 +126,8 @@ EMAIL_FILE_PATH = os.path.join(BASE_DIR, 'sent_emails')
 # os.getenv('EMAIL_USE_TLS')
 # os.getenv('EMAIL_HOST_USER')
 # os.getenv('EMAIL_HOST_PASSWORD')
+
+
+CELERY_TIMEZONE = "Europe/Moscow"
+CELERY_TASK_TRACK_STARTED = True
+CELERY_TASK_TIME_LIMIT = 30 * 60

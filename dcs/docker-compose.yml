@@ -13,3 +13,11 @@ services:
     image: "redis:latest"
     ports:
       - "6379:6379"
+
+  celery:
+    build: .
+    command: celery -A dcs worker --loglevel=info
+    volumes:
+      - .:/code
+    depends_on:
+      - redis
