@@ -1,5 +1,4 @@
 from django.core.cache import cache
-from django.core.mail import EmailMessage
 from django.db.models import Sum, Count
 from rest_framework import generics, permissions, viewsets, status
 from rest_framework.authtoken.models import Token
@@ -10,6 +9,8 @@ from .models import Payment, Collect, Reason
 from .permissions import IsAuthenticatedOrReadOnly
 from .serializers import PaymentSerializer, ReasonSerializer, CollectSerializer, \
     UserSerializer, LoginSerializer
+from .tasks import send_payment_confirmation_email_task, send_collect_confirmation_email_task, \
+    send_payment_received_email_task
 
 
 class CacheMixin:
@@ -40,18 +41,12 @@ class PaymentViewSet(CacheMixin, viewsets.ModelViewSet):
         response = super().create(request, *args, **kwargs)
         if response.status_code == 201:
             cache.delete(self.cache_key)
-            self.send_confirmation_email(request)
-        return response
 
-    @staticmethod
-    def send_confirmation_email(request):
-        email = EmailMessage(
-            'Успешное пожертвование',
-            f'Вы успешно создали пожертвование.',
-            'dcs@example.com',
-            [request.user.email],
-        )
-        email.send()
+            collect_instance = Collect.objects.get(id=response.data['collect'])
+            send_payment_confirmation_email_task(request)
+            send_payment_received_email_task(request, collect_instance)
+
+        return response
 
 
 class CollectViewSet(CacheMixin, viewsets.ModelViewSet):
@@ -70,7 +65,7 @@ class CollectViewSet(CacheMixin, viewsets.ModelViewSet):
         response = super().create(request, *args, **kwargs)
         if response.status_code == 201:
             cache.delete(self.cache_key)
-            self.send_confirmation_email(request)
+            send_collect_confirmation_email_task(request)
         return response
 
     def get_queryset(self):
@@ -86,16 +81,6 @@ class CollectViewSet(CacheMixin, viewsets.ModelViewSet):
         payments = Payment.objects.filter(collect_id=pk)
         serializer = PaymentSerializer(payments, many=True)
         return Response(serializer.data)
-
-    @staticmethod
-    def send_confirmation_email(request):
-        email = EmailMessage(
-            'Успешное создание сбора',
-            f'Вы успешно создали сбор с заголовком {request.data['title']}.',
-            'dcs@example.com',
-            [request.user.email],
-        )
-        email.send()
 
 
 class ReasonViewSet(viewsets.ModelViewSet):
